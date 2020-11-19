@@ -32,7 +32,7 @@ Courses I've taken (directory names in Polish, so that they can be more easily f
 ### Term 4
 - [Algorithms and data structures](Algorytmy_i_struktury_danych)
 - [Computer systems](Architektury_systemow_komputerowych)
-- [Probablity and statistics](Rachunek_prawdopodobienstwa_i_statystyka)
+- [Probability and statistics](Rachunek_prawdopodobienstwa_i_statystyka)
 - [Database applications](Kurs_projektowania_aplikacji_z_bazami_danych)
 - A different perspective on economy
 
