@@ -9,7 +9,7 @@ setup(
         'requests==2.21.0',
         'simplejson==3.16.0',
         'pywallet==0.1.0',
-        'eth-account==0.4.0',
+        'eth-account==0.5.9',
     ],
     extras_require={
         'dev': [
