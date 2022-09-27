@@ -1,0 +1,63 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{amsmath}
+
+\usepackage{nopageno}
+
+\begin{document}
+
+\begin{flushright}
+\textit{Sławomir Górawski}
+\end{flushright}
+
+\paragraph{Lista 8, zadanie 3.}
+Mamy $n$ osób. Każda data urodzenia jest równie prawdopodobna
+(załóżmy, że nikt nie urodził się 29 lutego).
+Ile musi wynosić $n$,
+żeby prawdopodobieństwo istnienia dwóch osób z tą samą datą urodzenia
+przekraczało 1/2?
+
+\paragraph{Rozwiązanie.}
+Niech $P(n)$ oznacza prawdopodobieństwo,
+że w grupie $n$ osób istnieją dwie osoby z tą samą datą urodzenia.
+Policzymy najpierw prawdopodobieństwo zdarzenia przeciwnego:
+każda z $n$ osób urodziła się innego dnia.
+Aby tak było, pierwsza osoba może urodzić się dowolnego dnia,
+druga -- każdego oprócz tego co pierwsza,
+trzecia -- każdego oprócz tych co pierwsza i druga itd.:
+\[
+    P(n) = 1 - 1 \cdot
+        \left( 1 - \frac{1}{365} \right) \cdot
+        \left( 1 - \frac{2}{365} \right)
+        \cdots
+        \left( 1 - \frac{n - 1}{365} \right)
+\]
+Podstawiając kolejne wartości $n$,
+możemy dojść do rozwiązania: $P(n) > 1/2$ dla $n \ge 23$.
+Możemy też spróbować uzyskać wynik,
+przybliżając wzór na $P(n)$ przy użyciu szeregu Taylora.
+Skorzystamy z faktu, że $e^x \approx 1 + x$.
+Wtedy $1 - a/365 \approx e^{-a/365}$.
+Po podstawieniu daje nam to:
+\begin{align*}
+    P(n) &\approx 1 - e^{-1/365} \cdots e^{-(n - 1)/365} \\
+        &= 1 - e^{-(1 + 2 + \cdots + (n - 1))/365} \\
+        &= 1 - e^{-(n(n - 1)/2)/365} \\
+        &= 1 - e^{-n(n - 1)/730} \\
+        &\approx 1 - e^{-n^2/730}
+\end{align*}
+Chcemy teraz rozwiązać nierówność:
+\begin{align*}
+    P(n) &> \frac{1}{2} \\
+    1 - e^{-n^2/730} &> \frac{1}{2} \\
+    e^{-n^2/730} &< \frac{1}{2} \\
+    -\frac{n^2}{730} &< -\ln 2 \\
+    n^2 &> 730 \ln 2 \\
+    n &> \sqrt{730 \ln 2} \\
+    n &> 22.49\dots
+\end{align*}
+Dla całkowitych $n$ daje to $n \ge 23$.
+\end{document}
+

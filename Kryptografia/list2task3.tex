@@ -1,0 +1,111 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{nopageno}
+\usepackage{fullpage}
+
+\newcommand{\xor}{\oplus}
+% c for complement, shorter
+\renewcommand{\c}{\overline}
+
+\begin{document}
+
+\begin{flushright}
+\textit{Sławomir Górawski}
+\end{flushright}
+\bigskip
+
+\noindent\textbf{Lista 2, zadanie 3.}
+Niech $\c{x}$ będzie logicznym dopełnieniem ciągu x złożonego z zer i jedynek.
+Niech $E$ oznacza szyfrowanie DESem.
+Pokaż, że jeśli $y = E_K(x)$, to $\c y = E_{\c K}(\c x)$.
+Jak używając tej tożsamości można zredukować dwukrotnie liczbę szyfrowań
+przy kryptoanalizie DESa poprzez przeszukanie przestrzeni
+kluczy dla danej pary tekst jawny -- szyfrogram?
+
+\paragraph{1.}
+Weźmy dowolny 64-bitowy ciąg $x$.
+Pokażemy, że dla danego klucza $K$ jeśli $y = E_K(x)$, to $\c y = E_{\c K}(\c x)$.
+W tym celu przyjrzyjmy się, co dzieje się z tekstem jawnym przy szyfrowaniu DESem:
+\begin{enumerate}
+    \item Na początku ciąg jest permutowany i dzielony na dwie 32-bitowe części: $l_0$ i $r_0$.
+    \item Następnie obie części przechodzą przez 16 cykli szyfrowania --
+        niech $(l_i, r_i)$ będą wynikiem $i$-tego cyklu.
+    \item Po wykonaniu tych operacji $l_{16}$ oraz $r_{16}$ łączone są w jeden ciąg
+        i dokonywana jest permutacja końcowa, która daje szyfrogram.
+\end{enumerate}
+
+Niech $L_i$ i $R_i$ będą wynikami $i$-tego cyklu szyfrowania tekstu $x$ kluczem $K$.
+Permutacje zachowują dopełnienie,
+tj. dla dowolnej permutacji bitów $\pi$ zachodzi $\pi(\c x) = \c{\pi(x)}$.
+Wynika z tego, że aby wynikiem permutacji końcowej był ciąg $\c y$,
+musi ona dostać na wejściu $\c{L_{16}}$ i $\c{R_{16}}$.
+Pokażemy, że przy szyfrowaniu tekstu $\c x$ kluczem $\c K$
+wynikiem $i$-tego cyklu szyfrowania są $\c{L_i}$ oraz $\c{R_i}$,
+dla każdego $i$ od 0 do 16.
+
+\begin{proof}
+    Na początku pokażemy, że $l_0 = \c{L_0}$ i $r_0 = \c{R_0}$.
+    Wiemy, że permutacje bitów zachowują dopełnienie,
+    więc jeśli wejściem do permutacji początkowej był $\c x$,
+    to jej wynikiem będzie $(\c{L_0}, \c{R_0})$.
+    Teraz chcemy pokazać, że każdy cykl szyfrowania zachowuje dopełnienie.
+    Załóżmy, że $l_i = \c{L_i}$ oraz $r_i = \c{R_i}$.
+    Pokażemy, że wynikami kolejnego cyklu szyfrowania są wtedy $\c{L_{i + 1}}$ oraz $\c{R_{i + 1}}$.
+    W DESie otrzymuje się je tak:
+    \begin{align*}
+        l_{i + 1} &= r_i, \\
+        r_{i + 1} &= l_i \xor f(k_i \xor w(r_i)),
+    \end{align*}
+    gdzie $k_i$ oraz $w$ wyjaśnimy niżej. Dla lewej strony dowód jest krótki:
+    \[
+        l_{i + 1} = r_i = \c{R_i} = \c{L_{i + 1}}.
+    \]
+    
+    Klucz $k_i$ jest tworzony przez przestawienie bitów i wybór 48 z nich.
+    Ta operacja zachowuje dopełnienie;
+    jeśli przy szyfrowaniu kluczem $K$ mieliśmy $k_i = k$, to obecnie $k_i = \c k$.
+    Do rozszerzenia prawej części wejścia używamy permutacji rozszerzonej $w$,
+    polega to na permutacji ze zduplikowaniem niektórych bitów;
+    to również zachowuje dopełnienie. Razem daje to:
+    \begin{align*}
+        r_{i + 1} &= l_i \xor f(k_i \xor w(r_i)) \\
+            &= \c{L_i} \xor f(\c k \xor w(\c{R_i})) \\
+            &= \c{L_i} \xor f(\c k \xor \c{w(R_i)}) \\
+            &= \c{L_i} \xor f(k \xor w(R_i)) && (\c a \xor \c b = a \xor b) \\
+            &= \c{L_i \xor f(k \xor w(R_i))} && (\c a \xor b = \c{a \xor b}) \\
+            &= \c{R_{i + 1}}.
+    \end{align*}
+    Nie musimy tutaj wiedzieć dokładnie, jak działa $f$ --
+    wystarczy nam, że wynik jest taki sam,
+    jak przy szyfrowaniu tekstu $x$ kluczem $K$.
+    Z zasady indukcji $l_i = \c{L_i}$ i $r_i = \c{R_i}$ dla $i \in \mathbb{N}$.
+    Nie wiemy, czym jest $k_i$ dla $i > 16$,
+    jednak istotne dla nas jest,
+    że $l_{16} = \c{L_{16}}$ oraz $r_{16} = \c{R_{16}}$.
+\end{proof}
+
+\paragraph{2.}
+Aby wykorzystać udowodnioną tożsamość,
+by zredukować liczbę szyfrowań przy kryptoanalizie DESa,
+potrzebujemy dwóch par tekst jawny -- szyfrogram:
+$(x, c_1)$ oraz $(\c x, c_2)$.
+Następnie sprawdzamy po kolei potencjalne klucze --
+dla danego $K$ obliczamy $y = E_K(x)$.
+Następnie:
+\begin{enumerate}
+    \item Jeśli $y = c_1$, to $K$ jest szukanym kluczem.
+    \item Jeśli $y = \c{c_2}$, to szukanym kluczem jest $\c{K}$.
+    \item Jeśli żadna z równości nie jest prawdziwa,
+        możemy odrzucić $K$ i $\c K$ z przestrzeni poszukiwań.
+\end{enumerate}
+W ten sposób jesteśmy w stanie przy pomocy jednego szyfrowania
+sprawdzić dwa potencjalne klucze naraz.
+Ciągów bitów mogących być kluczami jest $2^{56}$,
+ale wystarczy $2^{55}$ szyfrowań by sprawdzić je wszystkie.
+
+\end{document}

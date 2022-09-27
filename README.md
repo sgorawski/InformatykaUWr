@@ -62,3 +62,14 @@ Courses I've taken (directory names in Polish, so that they can be more easily f
 - [Text mining](Eksploracja_tekstow)
 - [Seminar: Software testing](Seminarium_Testowanie_oprogramowania)
 - Distributed algorithms
+
+### Term 2
+- [Programming languages](Jezyki_programowania)
+- [Cryptography](Kryptografia)
+- Randomized algorithms
+- Probability for computer science
+- History of philosophy
+
+### Term 3
+- [Introduction to algorithms in telecommunication](Introduction_to_algorithms_in_telecommunication)
+- Seminar: Population protocols

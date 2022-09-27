@@ -1,0 +1,86 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{nopageno}
+\usepackage{mathtools}
+\usepackage[top=1in,bottom=1in,left=1.875in,right=1.875in]{geometry}
+
+\newcommand{\xor}{\oplus}
+
+\begin{document}
+
+\begin{flushright}
+\textit{Sławomir Górawski}
+\end{flushright}
+\bigskip
+
+\noindent\textbf{Lista 3, zadanie 7.}
+W AES S-boks oblicza wartość bajtu $b$ w ten sposób, że
+\begin{itemize}
+    \item Jeśli $b \ne 0$, to $c = b^{-1}$ w ciele $F_{2^8}$,
+        które jest ciałem wielomianów nad $\mathbb{Z}_2$ z działaniami modulo
+        nierozkładalny wielomian ósmego stopnia. Jeśli $b = 0$, to $c = 0$.
+    \item Niech $c = c_0c_1c_2c_3c_4c_5c_6c_7$.
+        Wtedy $d_i = c_i \xor c_{i + 4} \xor c_{i + 5} \xor c_{i + 6} \xor c_{i + 7}$,
+        gdzie indeksy dodawane są modulo 8.
+    \item Wynikiem działania S-boksa jest $e = d \xor 01100011$.
+\end{itemize}
+Jak wygląda przekształcenie odwrotne do tego S-boksa?
+
+\paragraph{Rozwiązanie.}
+Na początku odwrócimy dwa ostatnie kroki.
+Można je przestawić następująco jako operacje na macierzach modulo 2:
+\[
+    e = Ac + t,
+\]
+gdzie $c = \begin{bsmallmatrix} c_0 & c_1 & \cdots & c_7 \end{bsmallmatrix}^T$,
+$t = \begin{bsmallmatrix} 1 & 1 & 0 & 0 & 0 & 1 & 1 & 0 \end{bsmallmatrix}^T$ oraz
+% Copied from Wikipedia source
+\[
+    A = \begin{bmatrix}
+        1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+        1 & 1 & 0 & 0 & 0 & 1 & 1 & 1 \\
+        1 & 1 & 1 & 0 & 0 & 0 & 1 & 1 \\
+        1 & 1 & 1 & 1 & 0 & 0 & 0 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 \\
+        0 & 1 & 1 & 1 & 1 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 1 & 1 & 1 & 1 & 0 \\
+        0 & 0 & 0 & 1 & 1 & 1 & 1 & 1
+    \end{bmatrix}.
+\]
+Odwracamy to przekształcenie:
+\begin{align*}
+    e &= Ac + t \\
+    Ac &= e + t \\
+    c &= A^{-1}(e + t) \\
+    c &= A^{-1}e + A^{-1}t.
+\end{align*}
+Po odwróceniu macierzy $A$ modulo 2 otrzymujemy:
+% Copied from Wikipedia source
+\[
+    A^{-1} = \begin{bmatrix}
+        0 & 0 & 1 & 0 & 0 & 1 & 0 & 1 \\
+        1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 & 1 & 0 & 0 & 1 \\
+        1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 \\
+        0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+        0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 \\
+        1 & 0 & 0 & 1 & 0 & 1 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 1 & 0 & 1 & 0
+    \end{bmatrix},
+\]
+natomiast $A^{-1}t = \begin{bsmallmatrix} 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \end{bsmallmatrix}^T$.
+Możemy to zapisać jako:
+\[
+    c_i = e_{i + 2} \xor e_{i + 5} \xor e_{i + 7} \xor 00000101.
+\]
+Następnie musimy odwrócić pierwszy krok S-boksa,
+co nic w tym przypadku nie zmienia --
+szukamy odwrotności $c$ w $F_{2^8}$,
+jeśli $c \ne 0$, to $b = c^{-1}$,
+natomiast jeśli $c = 0$, to $b = 0$.
+\end{document}
